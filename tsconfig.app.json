@@ -31,5 +31,5 @@
       ]
     }
   },
-  "include": ["src"]
+  "include": ["src", "sub1/src/result.tsx"]
 }
