@@ -12,23 +12,32 @@ interface BuildResult {
 
 async function processId(id: string): Promise<BuildResult> {
   const worktreePath = join(process.cwd(), id);
+  const resultPath = join(worktreePath, "src", "result.tsx");
   const outputPath = join(process.cwd(), "outputs", id);
+  const inputPath = join(process.cwd(), "inputs", id);
 
   try {
     console.log(`Processing ID: ${id}`);
 
-    try {
+    if (!existsSync(inputPath)) {
+      console.error(`Input file not found at ${inputPath}`);
+      return {
+        id,
+        success: false,
+        error: `Input file not found at ${inputPath}`,
+      };
+    }
+
+    if (existsSync(worktreePath)) {
       execSync(`git worktree remove --force ${id}`, { stdio: "inherit" });
-    } catch (error) {
-      console.log(`Worktree for ${id} already removed`);
     }
 
     // Create git worktree
     console.log(`Creating worktree for ${id}...`);
-    execSync(`git worktree add ${id}`, { stdio: "inherit" });
+    execSync(`git worktree add -f ${id} main`, { stdio: "inherit" });
 
     // Move file into worktree
-    execSync(`mv inputs/${id}.tsx ${worktreePath}/src/result.tsx`, {
+    execSync(`mv ${inputPath} ${resultPath}`, {
       stdio: "inherit",
     });
 
