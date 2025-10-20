@@ -13,8 +13,8 @@ interface BuildResult {
 async function processId(id: string): Promise<BuildResult> {
   const worktreePath = join(process.cwd(), id);
   const resultPath = join(worktreePath, "src", "result.tsx");
-  const outputPath = join("/tmp/outputs", id);
-  const inputPath = join("/tmp/inputs", id);
+  const outputPath = join(process.cwd(), "/outputs", id);
+  const inputPath = join(process.cwd(), "/inputs", id);
 
   try {
     console.log(`Processing ID: ${id}`);
